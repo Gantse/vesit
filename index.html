@@ -115,7 +115,6 @@
             
             const getDeviceType = () => {
                 const ua = navigator.userAgent;
-                // ✅ التحقق المحسّن يبدأ هنا
                 if (/tablet|ipad|playbook|silk/i.test(ua) || /android(?!.*mobi)/i.test(ua)) {
                     return 'تابلت';
                 }
@@ -125,10 +124,25 @@
                 return 'كمبيوتر';
             };
 
+            // ✅ دالة جديدة للتعرف على المتصفح
+            const getBrowserName = () => {
+                const userAgent = navigator.userAgent;
+
+                // الترتيب مهم لتجنب النتائج الخاطئة
+                if (userAgent.includes("Edg")) return "Edge";
+                if (userAgent.includes("OPR") || userAgent.includes("Opera")) return "Opera";
+                if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) return "Chrome";
+                if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) return "Safari";
+                if (userAgent.includes("Firefox")) return "Firefox";
+                if (userAgent.includes("MSIE") || userAgent.includes("Trident/")) return "Internet Explorer";
+                
+                return "غير معروف";
+            };
+
             const visitData = {
                 domain: domain,
                 referrer: referrer,
-                browser: 'غير معروف', // يمكن تحسينه بنفس طريقة الجهاز
+                browser: getBrowserName(), // ✅ استخدام الدالة الجديدة
                 deviceType: getDeviceType(),
                 timestamp: new Date().toISOString(),
                 hour: new Date().getHours()
@@ -141,7 +155,7 @@
         }
 
         function initializeDashboard() {
-            // ... باقي الكود لم يتغير ...
+            // باقي الكود لم يتغير
             let allVisits = [];
             let currentFilter = 'all';
 
@@ -227,7 +241,6 @@
             }
 
              function updateTimeAnalysis(visits) {
-                // ✅ الدالة المحسّنة تبدأ هنا
                 elements.timeAnalysis.innerHTML = '';
                 let morning = 0, afternoon = 0, evening = 0, night = 0;
                 
